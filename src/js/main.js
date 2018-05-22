@@ -1,6 +1,16 @@
 (function($){
+	Array.prototype.unique = function() {
+		var a = this.concat();
+		for(var i=0; i<a.length; ++i) {
+			for(var j=i+1; j<a.length; ++j) {
+				if(a[i] === a[j])
+					a.splice(j--, 1);
+			}
+		}
+		return a;
+	};
 	var avonCat = null,
-		domUrl = document.location.origin + "/docs/",
+		domUrl = window.domUrl || document.location.origin + "/docs/",
 		AvonCatalog = function(element, data){
 			var self = this,
 				$book = 
@@ -11,15 +21,18 @@
 						"<div class=\"book-slider turnjs-slider\">" +
 							"<div class=\"jsslider\"></div>" +
 						"</div>" +
+						"<div class=\"products\"></div>" +
 					"</div>");
 			self.element = element;
 			self.turn = $('.turn', $book);
 			self.slider = $('.jsslider', $book);
+			self.productsWrapper = $('.products', $book);
 			self.index = -1;
 			self.pageWidth = self.pageHeight = 0;
 			self.pages = [];
 			self.page = 0;
 			self.book = {};
+			self.req = null;
 			self.jsTurn = null;
 			self._thumbPreview = null;
 			self.select = $(data.select);
@@ -171,6 +184,10 @@
 				$this = self.select,
 				val = parseInt($this.val());
 			if(self.index != val){
+				if(self.req){
+					self.req.abort();
+					self.req = null;
+				}
 				self.index = val;
 				self.book = self.data.catalogs[self.index];
 				self.pages = self.data.catalogs[self.index].pages;
@@ -252,7 +269,6 @@
 						var $this = $(this),
 							index = $this.turn("page"),
 							length = $this.turn("pages");
-						//console.log('tutning', page, pageObject);
 						if (index > 3 && length - 3 > index) {
 							if (1 == page) {
 								return $this.turn("page", 2).turn("stop").turn("page", page);
@@ -274,6 +290,9 @@
 					turned: function(event, page, pageObject){
 						var $this = $(this),
 							doublePage = {};
+						if(self.req){
+							self.req.abort();
+						}
 						self.page = parseInt(page || $this.turn("page"), 10);
 						var c = self.page,
 							g = self.page % 2,
@@ -284,7 +303,6 @@
 							start: 0 == g ? c == j ? j : c : c == j ? j : 1 == c ? c : c - 1
 						};
 						self.getProducts(doublePage);
-						//self.getModal(self.page)
 						
 					},
 					missing: self.missing.bind(self),
@@ -296,7 +314,11 @@
 		},
 		getProducts: function(object){
 			var self = this,
-				doubl = object.double,
+				productsWrapper = $("<div></div>", {
+					'class' : 'products-wrapper'
+				});
+			self.productsWrapper.empty();
+			var doubl = object.double,
 				start = object.start,
 				pages = self.pages[start-1].products.slice(),
 				products = [],
@@ -312,12 +334,12 @@
 							compaing: self.data.compaing,
 							index: self.index + 1,
 						};
-						$.ajax({
+						self.req = $.ajax({
 							url: domUrl + 'function.php',
 							data: data,
 							method: 'POST',
 							type: 'json',
-							success: callBackAjax,
+							success: callBackAjax.bind(self),
 							error: function(){
 								callBackAjax(null);
 							}
@@ -325,9 +347,92 @@
 					}
 				},
 				callBackAjax = function(data){
-					//console.log(data);
+					var selfcat = this,
+						selfdata = selfcat.data;
 					if(data){
-						
+						if($.isArray(data)){
+							selfcat.productsWrapper.append(productsWrapper);
+							var products = [];
+							data.forEach(function(item, index, array){
+								var element = $("<div></div>", {
+										'class': 'product clearfix'
+									}),
+									elements = [
+										$("<div></div>", {
+											'class': 'product-title'
+										}).append($("<strong></strong>", {
+											'text' : item.Product.Name
+										})),
+										$("<div></div>", {
+											'class': 'product-image',
+											'data-image': selfdata.cdnRoot + "assets/ru-ru/images/product/prod_" + item.Product.ProfileNumber.toLowerCase() + "_1_613x613.jpg"
+										}).append([
+											$("<img />", {
+												'src': selfdata.cdnRoot + "assets/ru-ru/images/product/prod_" + item.Product.ProfileNumber.toLowerCase() + "_1_613x613.jpg",
+												'alt': ''
+											}), 
+											$("<span></span>", {
+												'class': (item.Product.SingleVariantFsc ? "product-code" : ""),
+												'text': (item.Product.SingleVariantFsc ? item.Product.SingleVariantFsc : "")
+											}),
+											$("<span></span>", {
+												'class': (item.Product.SalePriceFormatted ? "product-price" : ""),
+												'text': (item.Product.SalePriceFormatted ? item.Product.SalePriceFormatted : "")
+											}),
+										]),
+										$("<div></div>", {
+											'class': 'product-description'
+										}).html(item.Description),
+										$("<div></div>", {
+											'class': 'clearfix'
+										})
+									];
+								if(item.HasShadeVariants){
+									var shades = $("<div></div>", {
+											'class': 'shades-wrapper'
+										});
+									elements.push($("<div></div>", {
+										'class' : 'shades'
+									}).append(shades));
+									item.AllVariants.forEach(function(varitem, varindex, vararray){
+										if(varitem.IsAvailable){
+											var column = $("<div></div>", {
+												'class' : 'shade'
+											}).append([
+												$("<div></div>", {
+													'class': 'shade-code',
+													'text': varitem.DisplayLineNumber
+												}),
+												$("<img />", {
+													'class': 'shade-iamge',
+													'src': varitem.Image
+												}),
+												$("<div></div>", {
+													'class': 'shade-name',
+													'text': varitem.Name
+												})
+											]);
+											
+											shades.append(column);
+										}
+									});
+								}
+								
+								productsWrapper.append(element.append(elements));
+								$("*", productsWrapper).each(function(){
+									$(this).removeAttr('style');
+									if(this.tagName == 'A'){
+										$(this).attr({
+											'target': "_blank"
+										});
+									}
+								});
+								if(item.HasNonShadeVariants){
+									//product.groups.push(item.Product.VariantGroups[0]);
+								}
+							});
+							//console.log(products);
+						}
 					}
 					if(doubl){
 						doubl = false;
@@ -345,6 +450,13 @@
 			});
 			outproducts = self.filterArray(products);
 			doublOutproducts = self.filterArray(doublProducts);
+			var unout = outproducts.slice(),
+				undbl = doublOutproducts.slice(),
+				full = unout.concat(undbl).unique();
+			if(full.length < 3){
+				outproducts = full;
+				doubl = false;
+			}
 			if(outproducts.length){
 				getAjax(outproducts, start);
 			}else{

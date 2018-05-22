@@ -89,8 +89,9 @@ function getShopContext(&$object){
 		preg_match($re, $file, $matches);
 		if($matches[1]):
 			$avon = json_decode($matches[1]);
+			//@file_put_contents(FILE_ROOT . "/avon.json", $matches[1]);
 			if($avon):
-				$cdn = "https://my.avon.ru/";
+				$cdn = $avon->CdnPaths[0] . "/";//"https://my.avon.ru/";//$avon->CdnPaths[0] . "/";
 				$object->compaing = $avon->CampaignNumber;
 				$object->leftDay = $avon->CampaignDaysLeft;
 				$object->cdnRoot = $cdn;
