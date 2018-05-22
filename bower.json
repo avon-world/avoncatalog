@@ -1,25 +1,26 @@
 {
-	"name": "avoncatalog",
-	"description": "Catalog Online AVON",
-	"main": "package.json",
-	"authors": [
-		"ProjectSoft <projectsoft2009@yandex.ru>"
-	],
-	"license": "ISC",
-	"homepage": "https://github.com/avon-world/avoncatalog",
-	"ignore": [
-		"**/.*",
-		"node_modules",
-		"bower_components",
-		"test",
-		"tests"
-	],
-	"devDependencies": {
-		"turn.js": "https://github.com/blasten/turn.js.git",
-		"jquery": "^3.3.1",
-		"jquery.cookie": "https://github.com/carhartl/jquery-cookie.git",
-		"fancybox": "^3.3.5",
-		"normalize-css": "normalize.css#>=7.0.0",
-		"yepnope": ">=2.0.0"
-	}
+  "name": "avoncatalog",
+  "description": "Catalog Online AVON",
+  "main": "package.json",
+  "authors": [
+    "ProjectSoft <projectsoft2009@yandex.ru>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/avon-world/avoncatalog",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "turn.js": "https://github.com/blasten/turn.js.git",
+    "jquery": "^3.3.1",
+    "jquery.cookie": "https://github.com/carhartl/jquery-cookie.git",
+    "fancybox": "^3.3.5",
+    "normalize-css": "normalize.css#>=7.0.0",
+    "yepnope": ">=2.0.0",
+    "jquery-ui": "https://github.com/components/jqueryui.git#^1.12.1"
+  }
 }

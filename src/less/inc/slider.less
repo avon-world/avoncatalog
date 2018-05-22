@@ -1,0 +1,167 @@
+.turnjs-slider {
+	width: auto!important;
+	position: relative;
+	z-index: 400;
+}
+
+.turnjs-slider .thumbnail {
+	position: absolute;
+	background: rgba(0, 0, 0, .5);
+	z-index: 10000;
+	display: none;
+	border-radius: 5px;
+	-webkit-transform: translate3d(0, 50px, 0) scale(.1, .1);
+	transform: translate3d(0, 50px, 0) scale(.1, .1);
+	transition: -webkit-transform .2s;
+	transition: transform .2s;
+}
+
+.turnjs-slider .thumbnail > div {
+	background-color: rgba(255, 255, 255, .3);
+	padding: 7px;
+	flex: 0 1 100%;
+}
+
+.turnjs-slider .thumbnail div:after {
+	display: block;
+	background-color: rgba(255, 255, 255, .8);
+	color: #000;
+	font-size: 10px;
+	font-weight: bold;
+	text-align: center;
+	content: "Page №" attr(data-page);
+}
+
+.turnjs-slider .ui-widget-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.turnjs-slider .ui-slider {
+	position: relative;
+	text-align: left;
+}
+
+.turnjs-slider .ui-slider-handle {
+	position: absolute;
+	z-index: 0;
+	width: 80px;
+	height: 8px;
+	cursor: default;
+	border-radius: 5px;
+	border: 1px solid #fff;
+	background-color: #000;
+	opacity: .4;
+	display: block;
+	transition: opacity .2s;
+}
+
+.turnjs-slider .ui-slider-horizontal {
+	height: 8px;
+	margin-left: 15px;
+}
+
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle {
+	margin-left: -40px;
+	margin-top: -1px;
+	cursor: pointer;
+	outline: none!important;
+}
+
+.turnjs-slider .ui-state-disabled {
+	cursor: default!important;
+}
+
+.turnjs-slider .ui-state-hover {
+	opacity: .6;
+}
+
+.turnjs-slider .ui-state-hover .thumbnail {
+	display: block;
+	opacity: 0;
+}
+
+.turnjs-slider .ui-state-active {
+	opacity: 1;
+}
+
+.turnjs-slider .ui-state-active .thumbnail {
+	display: flex;
+	flex-direction: row;
+	opacity: 1;
+	-webkit-transform: scale(1, 1);
+	transform: scale(1, 1);
+}
+.turnjs-slider {
+	background: #fff;
+	border: 1px solid #ec008c;
+	height: 8px;
+	border-radius: 5px;
+	margin: 20px auto;
+	max-width: 860px;
+}
+
+.turnjs-slider .thumbnail {
+	height: auto;
+	bottom: 35px;
+	top: auto;
+}
+
+.turnjs-slider .thumbnail div {
+	width: auto;
+	height: auto;
+}
+
+.turnjs-slider .thumbnail-catalog {
+	margin: 0 auto;
+}
+
+.turnjs-slider .ui-slider-horizontal {
+	margin-left: 13px;
+	margin-right: 13px;
+	width: auto;
+	border: none;
+	height: 0;
+}
+
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle {
+	margin-left: -15px;
+	margin-top: -12px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	opacity: 1;
+	background-color: #fff;
+	border: 1px solid #ec008c;
+	transition: all .25s;
+}
+
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-active,
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-hover,
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-focus {
+	background-color: #ec008c;
+}
+
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-active:before,
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-hover:before,
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle.ui-state-focus:before {
+	background-color: #fff;
+}
+
+.turnjs-slider .ui-slider-horizontal .ui-slider-handle:before {
+	display: block;
+	position: absolute;
+	content: " ";
+	width: 8px;
+	height: 8px;
+	left: 50%;
+	top: 50%;
+	margin-left: -4px;
+	margin-top: -4px;
+	border-radius: 50%;
+	background-color: #ec008c;
+	transition: all .25s;
+}

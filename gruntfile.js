@@ -1,7 +1,7 @@
 module.exports = function(grunt){
 	require('load-grunt-tasks')(grunt);
 	require('time-grunt')(grunt);
-	var pugMinify = true,
+	var pugMinify = false,
 		optionsPug = {
 			pretty: !pugMinify ? '\t' : '',
 			separator:  !pugMinify ? '\n' : ''
@@ -11,7 +11,7 @@ module.exports = function(grunt){
 			meta: {
 				banners: '/*! <%= pkg.name %> v<%= pkg.version %> | <%= pkg.license %> License | <%= pkg.homepage %> */'
 			},
-			/*requirejs: {
+			requirejs: {
 				ui: {
 					options: {
 						baseUrl: __dirname+"/bower_components/jquery-ui/ui/widgets/",//"./",
@@ -24,9 +24,8 @@ module.exports = function(grunt){
 						skipModuleInsertion: true,
 						exclude: [ "jquery" ],
 						include: [ 
-									"../disable-selection.js",
-									"sortable.js",
-								],
+							"slider.js",
+						],
 						out: "test/js/jquery.vendors.js",
 						done: function(done, output) {
 							grunt.log.writeln(output.magenta);
@@ -39,7 +38,7 @@ module.exports = function(grunt){
 						}
 					}
 				}
-			},*/
+			},
 			uglify: {
 				compile: {
 					options: {
@@ -49,17 +48,28 @@ module.exports = function(grunt){
 							reserved: ['jQuery']
 						},
 						sourceMap: false, 
+						compress: false
 					},
 					files: [
 						{
 							expand: true,
 							flatten : true,
 							src: [
-								'src/js/*.js'
+								'src/js/main.js'
 							],
-							dest: 'docs/assets/js/',
+							dest: 'docs/assets/templates/book/js/',
 							filter: 'isFile'
 							//'docs/assets/js/main.js': 'src/js/main.js'
+						},
+						{
+							expand: true,
+							flatten : true,
+							src: [
+								'test/js/appjs.js'
+							],
+							dest: 'docs/assets/templates/book/js/',
+							filter: 'isFile'
+							//tooltip.js
 						},
 						/*{
 							expand: true,
@@ -76,7 +86,7 @@ module.exports = function(grunt){
 			},
 			jshint: {
 				src: [
-					'src/js/*.js'
+					'src/js/main.js'
 				],
 			},
 			less: {
@@ -130,7 +140,7 @@ module.exports = function(grunt){
 						'tests/css/normalize.css',
 						'tests/css/main.css'
 					],
-					dest: 'docs/assets/css/main.css',
+					dest: 'docs/assets/templates/book/css/main.css',
 				},
 				appcss: {
 					src: [
@@ -139,19 +149,23 @@ module.exports = function(grunt){
 						'tests/css/theme.css',
 						'tests/css/croppie.css'
 					],
-					dest: 'docs/assets/css/appcss.css',
+					dest: 'docs/assets/templates/book/css/appcss.css',
 				},
 				appjs: {
 					src: [
 						//'test/js/jquery.vendors.js',
+						'bower_components/jquery/dist/jquery.js',
 						'bower_components/jquery.cookie/jquery.cookie.js',
-						'bower_components/fancybox/dist/jquery.fancybox.min.js',
+						'test/js/jquery.vendors.js',
+						//'bower_components/turn.js/turn.js',
+						'src/js/turn.min.js',
+						'bower_components/fancybox/dist/jquery.fancybox.js',
 						//'bower_components/exif-js/exif.js',
 						//'bower_components/Croppie/croppie.min.js',
 						//'bower_components/arcticModal/arcticmodal/jquery.arcticmodal.js',
-						'test/js/tooltip.js'
+						//'test/js/tooltip.js'
 					],
-					dest: 'docs/assets/js/appjs.js'
+					dest: 'test/js/appjs.js'
 				}
 			},
 			copy: {
@@ -170,7 +184,15 @@ module.exports = function(grunt){
 					src: [
 						'**.*'
 					],
-					dest: 'docs/assets/fonts/',
+					dest: 'docs/assets/templates/book/fonts/',
+				},
+				php: {
+					expand: true,
+					cwd: 'src/php',
+					src: [
+						'**.*'
+					],
+					dest: 'docs/',
 				},
 				/*forested: {
 					expand: true,
@@ -208,7 +230,7 @@ module.exports = function(grunt){
 							src: [
 								'src/images/*.{png,jpg,gif,svg}'
 							],
-							dest: 'docs/assets/images/',
+							dest: 'docs/assets/templates/book/images/',
 							filter: 'isFile'
 						}
 					]
@@ -220,10 +242,7 @@ module.exports = function(grunt){
 				},
 				compile: {
 					files: [
-						'src/css/**/*.*',
-						'src/js/**/*.*',
-						'src/images/**/*.*',
-						'src/html/**/*.*'
+						'src/**/*.*'
 					],
 					tasks: [
 						'notify:watch',
@@ -231,10 +250,10 @@ module.exports = function(grunt){
 						'less',
 						'autoprefixer',
 						'jshint',
+						'concat',
+						'requirejs',
 						'copy',
 						'uglify',
-						//'requirejs',
-						'concat',
 						'pug',
 						'notify:done'
 					]

@@ -1,5 +1,7 @@
+/.htaccess
 /node_modules/
 /bower_components/
+/docs/assets/files/
 /test/
 /tests/
 package-lock.json
